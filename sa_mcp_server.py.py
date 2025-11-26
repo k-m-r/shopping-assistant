@@ -86,46 +86,55 @@ if __name__ == "__main__":
             function_call_info = llm_connector.get_tool_call(user_input)
 
             if function_call_info:
-                function_name = function_call_info['function_name']
-                args = function_call_info['args']
 
-                print(f"\n🧠 MCP Dispatcher routing to function: **{function_name}**")
-                print(f"Arguments extracted: {args}")
+                response_type = function_call_info['type']
 
-                # --- Dispatch Logic ---
-                if function_name == "search_kroger_products":
+                if response_type == "tool_call":
+                    # --- TOOL CALL DISPATCH LOGIC ---
+                    function_name = function_call_info['function_name']
+                    args = function_call_info['args']
 
-                    search_term = args.get('search_term')
-                    zip_code = args.get('zip_code')
+                    print(f"\n🧠 MCP Dispatcher routing to function: **{function_name}**")
+                    print(f"Arguments extracted: {args}")
 
-                    if not search_term or not zip_code:
-                        print("Missing required search parameters.")
-                        continue
+                    # --- Dispatch Logic ---
+                    if function_name == "search_kroger_products":
+                        # ... (Existing Kroger search logic remains here) ...
+                        search_term = args.get('search_term')
+                        zip_code = args.get('zip_code')
 
-                    # get the nearest store
-                    location_id = kroger_client.find_nearest_store(zip_code)
+                        if not search_term or not zip_code:
+                            print("❌ Dispatch Failed: Missing required search parameters.")
+                            continue
 
-                    if kroger_client._access_token and location_id:
-                        product_results = kroger_client.search_products(location_id, search_term)
+                        location_id = kroger_client.find_nearest_store(zip_code)
 
-                        print("\n--- Context Snippet for LLM (Model Context) ---")
-                        display_results(product_results)
+                        if kroger_client._access_token and location_id:
+                            product_results = kroger_client.search_products(location_id, search_term)
+
+                            print("\n--- Context Snippet for LLM (Model Context) ---")
+                            display_results(product_results)
+                        else:
+                            print("❌ Resource Error: Failed to retrieve Kroger data.")
+
+                    elif function_name == "schedule_reminder":
+                        print(
+                            f"📅 **MCP Action:** Scheduling reminder for '{args.get('task')}' at '{args.get('time')}'...")
+                        print("   (This action would integrate with an external calendar/reminder service.)")
+
                     else:
-                        print("❌ Resource Error: Failed to retrieve Kroger data.")
+                        print(
+                            f"⚠️ Error: Function '{function_name}' is defined in schema but not implemented in dispatcher.")
 
-                elif function_name == "schedule_reminder":
-                    print(f"📅 **MCP Action:** Scheduling reminder for '{args.get('task')}' at '{args.get('time')}'...")
-                    print("   (This action would integrate with an external calendar/reminder service.)")
-
-                else:
-                    print(
-                        f"⚠️ Error: Function '{function_name}' is defined in schema but not implemented in dispatcher.")
+                elif response_type == "text_response":
+                    # --- DIRECT TEXT RESPONSE LOGIC (NEW) ---
+                    print("\n🤖 **LLM Response:**")
+                    print(function_call_info['text'])
 
             else:
-                print("🤖 LLM determined a general response is sufficient (No tool needed).")
-                # In a real system, the LLM's text response would be printed here.
-
-            print("\n-----------------------------------")
+                # This case handles simulation mode not finding a tool call,
+                # or a general failure in the LLM connector.
+                print("❌ Failure: Could not get a meaningful response from the LLM Connector.")
 
         except Exception as e:
             print(f"\n🚨 An unexpected error occurred: {e}")

@@ -3,6 +3,7 @@
 Started this project mostly to learn about MCP.
 Along the way I thought this will be a good opportunity for me to automate some of the cart building process.
 
+Leveraging the Public API's provided by Kroger
 
 The way I am planning to implement the shopping assistant is  :
 
@@ -25,10 +26,14 @@ The way I am planning to implement the shopping assistant is  :
 
 ## Development approach
 As I started this project mostly for learning purpose, I am not planning to use on any AI coding assistants in the IDE
-The way I am working if coming up with the details of how I would implement it and use help from Google Gemini web interface to get code snippets.
+The way I am working is 
+- decide what to implement
+- iterate over the plan with the help of Google Gemini
+- Use Gemini web interface to get code snippets
 
-For the current use case I am working on , there may not be a need for using an LLM.
-I am planning to start another project to play around with LLM based MCP server
+
+For the current use case I am working on , LLM is not mandatory
+I am planning to start another project to play around with LLM more
 
 
 ## References
