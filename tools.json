@@ -1,0 +1,38 @@
+[
+    {
+        "name": "search_kroger_products",
+        "description": "Searches the Kroger product catalog for an item in a specific location.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "search_term": {
+                    "type": "string",
+                    "description": "The name of the product to search for, e.g., 'milk', 'coffee'."
+                },
+                "zip_code": {
+                    "type": "string",
+                    "description": "The 5-digit US zip code of the desired store location."
+                }
+            },
+            "required": ["search_term", "zip_code"]
+        }
+    },
+    {
+        "name": "schedule_reminder",
+        "description": "Schedules a reminder for a task at a specific time.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "task": {
+                    "type": "string",
+                    "description": "The task to be reminded about, e.g., 'Buy milk'."
+                },
+                "time": {
+                    "type": "string",
+                    "description": "The specific time for the reminder, e.g., 'tomorrow morning' or '3 PM'."
+                }
+            },
+            "required": ["task", "time"]
+        }
+    }
+]
